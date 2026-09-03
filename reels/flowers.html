@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070510">
+<title>Reels saved for her</title>s
+<style>
+:root {
+    --bg: #070510;
+    --blue: #57a8ff;
+    --text: #f3eef7;
+}
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+body {
+    min-height: 100vh;
+    color: var(--text);
+    font-family: "Courier New", monospace;
+    padding: 40px;
+    overflow-x: hidden;
+    position: relative;
+    background:
+        radial-gradient(1200px 820px at 22% 10%, #2c0f30 0%, transparent 55%),
+        radial-gradient(1000px 900px at 84% 82%, #150a2c 0%, transparent 55%),
+        radial-gradient(900px 720px at 60% 42%, #200b26 0%, transparent 60%),
+        #070510;
+    background-attachment: fixed;
+}
+
+.fx {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+#auroraLayer { z-index: 0; }
+#bokeh       { z-index: 1; }
+#flowerFar   { z-index: 2; }
+#flowerMid   { z-index: 3; }
+#flowerNear  { z-index: 4; }
+#sparkle     { z-index: 5; }
+#vignette    { z-index: 6; }
+.readscrim   { z-index: 8; }
+.aura {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    mix-blend-mode: screen;
+    opacity: .55;
+    will-change: transform;
+    animation: auroraDrift ease-in-out infinite alternate;
+}
+.a1 { left: 6%;  top: 4%;   width: 46vw; height: 46vw;
+      background: radial-gradient(circle, rgba(255,120,180,.55), transparent 68%);
+      --dx: 5vw;  --dy: 4vh;  animation-duration: 26s; }
+.a2 { right: 2%; top: 26%;  width: 40vw; height: 40vw;
+      background: radial-gradient(circle, rgba(150,110,255,.5), transparent 68%);
+      --dx: -6vw; --dy: 6vh;  animation-duration: 34s; }
+.a3 { left: 30%; bottom: -8%; width: 52vw; height: 52vw;
+      background: radial-gradient(circle, rgba(255,190,120,.34), transparent 70%);
+      --dx: 4vw;  --dy: -5vh; animation-duration: 42s; }
+@keyframes auroraDrift {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(var(--dx), var(--dy)) scale(1.16); }
+}
+
+.flower {
+    position: fixed;
+    top: 0;
+    left: 0;
+    will-change: transform, filter;
+    animation: fall linear forwards;
+}
+.flowerSway {
+    will-change: transform;
+    animation: sway ease-in-out infinite alternate;
+}
+.flowerRock {
+    will-change: transform;
+    animation: rock ease-in-out infinite alternate;
+}
+.flower img,
+.bloom img {
+    display: block;
+    height: auto;
+}
+@keyframes fall {
+    from { transform: translateY(-200px); }
+    to   { transform: translateY(124vh); }
+}
+@keyframes sway {
+    from { transform: translateX(calc(var(--sway, 20px) * -1)); }
+    to   { transform: translateX(var(--sway, 20px)); }
+}
+@keyframes rock {
+    from { transform: rotate(var(--r1, -15deg)); }
+    to   { transform: rotate(var(--r2, 15deg)); }
+}
+
+.bloom {
+    position: fixed;
+    will-change: transform;
+}
+.bloomSway { animation: floaty ease-in-out infinite alternate; }
+@keyframes floaty {
+    from { transform: translateY(8px); }
+    to   { transform: translateY(-12px); }
+}
+#vignette {
+    background:
+        radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(4,3,9,.5) 78%, rgba(4,3,9,.9) 100%),
+        linear-gradient(to top, rgba(4,3,9,.72), transparent 28%);
+}
+
+.readscrim {
+    background: linear-gradient(102deg,
+        rgba(6,4,12,.9) 0%,
+        rgba(6,4,12,.6) 30%,
+        rgba(6,4,12,.16) 52%,
+        transparent 66%);
+}
+
+.pageContent {
+    position: relative;
+    z-index: 10;
+    max-width: 640px;
+}
+
+.back {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 16px;
+    text-shadow: 0 2px 12px rgba(0,0,0,.9);
+}
+.back:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+h1 {
+    margin-top: 70px;
+    font-weight: normal;
+    font-size: 40px;
+    letter-spacing: .5px;
+    text-shadow: 0 2px 20px rgba(0,0,0,.85), 0 0 30px rgba(255,150,200,.18);
+}
+
+.subtitle {
+    color: rgba(255,255,255,.75);
+    margin-bottom: 46px;
+    font-size: 16px;
+    text-shadow: 0 2px 14px rgba(0,0,0,.9);
+}
+
+#reels {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    max-width: 600px;
+}
+
+.reel {
+    display: block;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(87,168,255,.25);
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 19px;
+}
+.reel:hover { color: white; }
+
+.empty {
+    color: rgba(255,255,255,.55);
+    text-shadow: 0 2px 12px rgba(0,0,0,.85);
+}
+
+.videoReel { width: 100%; margin-bottom: 35px; }
+.videoReel video {
+    width: 100%;
+    max-height: 75vh;
+    background: black;
+    border-radius: 16px;
+    display: block;
+    box-shadow:
+        0 18px 50px rgba(0,0,0,.6),
+        0 0 40px rgba(255,140,190,.16),
+        0 0 0 1px rgba(255,200,225,.12);
+}
+.reelNumber {
+    color: var(--blue);
+    font-size: 17px;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 12px rgba(0,0,0,.9);
+}
+
+@media (max-width: 640px) {
+    body { padding: 26px; }
+    h1 { margin-top: 56px; font-size: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .flower, .flowerSway, .flowerRock, .bloomSway, .aura { animation: none !important; }
+}
+</style>
+</head>
+
+<body>
+<div class="fx" id="auroraLayer" aria-hidden="true">
+    <div class="aura a1"></div>
+    <div class="aura a2"></div>
+    <div class="aura a3"></div>
+</div>
+<canvas class="fx" id="bokeh" aria-hidden="true"></canvas>
+<div class="fx" id="flowerFar" aria-hidden="true"></div>
+<div class="fx" id="flowerMid" aria-hidden="true"></div>
+<div class="fx" id="flowerNear" aria-hidden="true"></div>
+<canvas class="fx" id="sparkle" aria-hidden="true"></canvas>
+<div class="fx" id="vignette" aria-hidden="true"></div>
+<div class="fx readscrim" aria-hidden="true"></div>
+<div class="pageContent">
+    <a class="back" href="../reels.html">← reels saved for her</a>
+    <h1>Flowers</h1>
+    <p class="subtitle">flowers I would have picked for you.</p>
+    <div id="reels"></div>
+</div>
+<script>
+const reels = [
+    {
+        type: "video",
+        src: "../media/reels/flowers/reel01-web.mp4"
+    },
+    {
+        type: "video",
+        src: "../media/reels/flowers/reel02.mp4"
+    },
+];
+const container = document.getElementById("reels");
+
+if (reels.length === 0) {
+    container.innerHTML = `
+        <div class="empty">
+            no reels saved yet.
+        </div>
+    `;
+} else {
+    reels.forEach((reel, index) => {
+        if (reel.type === "video") {
+            const wrapper = document.createElement("div");
+            wrapper.className = "videoReel";
+            wrapper.innerHTML = `
+                <div class="reelNumber">
+                    Reel ${String(index + 1).padStart(2, "0")}
+                </div>
+                <video controls playsinline preload="metadata">
+                    <source src="${reel.src}" type="video/mp4">
+                </video>
+            `;
+            container.appendChild(wrapper);
+        }
+        if (reel.type === "link") {
+            const link = document.createElement("a");
+            link.className = "reel";
+            link.href = reel.src;
+            link.target = "_blank";
+            link.textContent = "Reel " + String(index + 1).padStart(2, "0");
+            container.appendChild(link);
+        }
+    });
+}
+</script>
+<script>
+(function () {
+    "use strict";
+
+    const rand = (a, b) => a + Math.random() * (b - a);
+    const pick = a => a[(Math.random() * a.length) | 0];
+    const el = cls => { const d = document.createElement("div"); d.className = cls; return d; };
+    const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const DIR = "../media/reels/flowers/petals/";
+    const PETALS = [
+        "rose-pink", "rose-magenta", "rose-white", "rose-cream", "roses-red",
+        "orchid-pink", "lily-orange", "tulip-red", "narcissus-peach", "calla-white",
+        "sunflower", "dahlia-blue", "daisy-white", "clematis-purple",
+        "pimpernel-blue", "hawkweed-yellow"
+    ].map(n => DIR + n + ".webp");
+    PETALS.forEach(src => { const im = new Image(); im.src = src; }); 
+
+    const farBox  = document.getElementById("flowerFar");
+    const midBox  = document.getElementById("flowerMid");
+    const nearBox = document.getElementById("flowerNear");
+    const TIERS = [
+        { box: farBox,  s: [0.30, 0.55], o: [0.28, 0.48], d: [26, 40], blur: [2.0, 3.4] },
+        { box: midBox,  s: [0.55, 0.92], o: [0.50, 0.78], d: [18, 28], blur: [0.5, 1.2] },
+        { box: nearBox, s: [0.92, 1.55], o: [0.82, 1.00], d: [12, 19], blur: null }
+    ];
+    const BASE = 122;     
+    const MAX = 46;
+    const flowerCount = () => document.getElementsByClassName("flower").length;
+
+    function spawn(tier, seeded) {
+        if (flowerCount() > MAX) return;
+        const f = el("flower");
+        f.style.left = rand(-5, 100) + "vw";
+        const dur = rand(tier.d[0], tier.d[1]);
+        f.style.animationDuration = dur + "s";
+        f.style.animationDelay = (seeded ? -rand(0, dur) : 0) + "s";
+        f.style.opacity = rand(tier.o[0], tier.o[1]).toFixed(2);
+        f.style.filter = tier.blur
+            ? `blur(${rand(tier.blur[0], tier.blur[1]).toFixed(2)}px) saturate(1.06)`
+            : "saturate(1.07) drop-shadow(0 5px 9px rgba(0,0,0,.5)) drop-shadow(0 0 12px rgba(255,150,205,.10))";
+
+        const sway = el("flowerSway");
+        sway.style.setProperty("--sway", rand(14, 72).toFixed(0) + "px");
+        const sd = rand(3.6, 7);
+        sway.style.animationDuration = sd.toFixed(2) + "s";
+        sway.style.animationDelay = (-rand(0, sd)).toFixed(2) + "s";
+
+        const rock = el("flowerRock");
+        const b = rand(-32, 32), amp = rand(8, 26);
+        rock.style.setProperty("--r1", (b - amp).toFixed(0) + "deg");
+        rock.style.setProperty("--r2", (b + amp).toFixed(0) + "deg");
+        const rd = rand(4, 9);
+        rock.style.animationDuration = rd.toFixed(2) + "s";
+        rock.style.animationDelay = (-rand(0, rd)).toFixed(2) + "s";
+
+        const img = document.createElement("img");
+        img.src = pick(PETALS);
+        img.alt = "";
+        img.decoding = "async";
+        img.style.width = (BASE * rand(tier.s[0], tier.s[1])).toFixed(0) + "px";
+
+        rock.appendChild(img);
+        sway.appendChild(rock);
+        f.appendChild(sway);
+        tier.box.appendChild(f);
+        f.addEventListener("animationend", ev => { if (ev.target === f) f.remove(); });
+        return f;
+    }
+    function bottomBlooms() {
+        for (let i = 0; i < 6; i++) {
+            const b = el("bloom");
+            b.style.left = rand(-6, 88) + "vw";
+            b.style.bottom = rand(-14, -4) + "vh";
+            b.style.opacity = rand(0.16, 0.30).toFixed(2);
+            b.style.filter = `blur(${rand(3, 6).toFixed(1)}px) saturate(1.05)`;
+            const sway = el("bloomSway");
+            sway.style.animationDuration = rand(7, 12).toFixed(1) + "s";
+            sway.style.animationDelay = (-rand(0, 6)).toFixed(1) + "s";
+            const img = document.createElement("img");
+            img.src = pick(PETALS);
+            img.alt = "";
+            img.style.width = rand(240, 400).toFixed(0) + "px";
+            sway.appendChild(img);
+            b.appendChild(sway);
+            farBox.appendChild(b);
+        }
+    }
+    function rgba(hex, a) {
+        const h = hex.replace("#", "");
+        const n = parseInt(h.length === 3 ? h.split("").map(x => x + x).join("") : h, 16);
+        return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+    }
+    function makeCanvas(canvas, opts) {
+        const ctx = canvas.getContext("2d");
+        let parts = [], raf = 0;
+        function resize() {
+            const dpr = Math.min(1.5, window.devicePixelRatio || 1);
+            canvas.width = innerWidth * dpr;
+            canvas.height = innerHeight * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            parts = Array.from({ length: opts.count }, opts.mk);
+        }
+        function frame() {
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            ctx.globalCompositeOperation = "lighter";
+            for (const p of parts) opts.draw(ctx, p);
+            ctx.globalCompositeOperation = "source-over";
+        }
+        function loop() { frame(); raf = requestAnimationFrame(loop); }
+        resize();
+        addEventListener("resize", resize);
+        if (REDUCE) frame(); else loop();
+        return {
+            stop() { cancelAnimationFrame(raf); raf = 0; },
+            start() { if (!raf && !REDUCE) loop(); }
+        };
+    }
+
+    const bokeh = makeCanvas(document.getElementById("bokeh"), {
+        count: 24,
+        mk() {
+            const cols = ["#ff9ec4", "#d68bff", "#ffd98a", "#ff7fae", "#b79bff", "#ffffff"];
+            return { x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+                     r: rand(34, 96), c: pick(cols), a: rand(0.05, 0.15), vy: -rand(0.05, 0.24), ph: rand(0, 1000) };
+        },
+        draw(ctx, p) {
+            p.y += p.vy;
+            p.x += Math.sin((p.y + p.ph) / 130) * 0.25;
+            if (p.y < -p.r * 2) { p.y = innerHeight + p.r; p.x = Math.random() * innerWidth; }
+            const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+            g.addColorStop(0, rgba(p.c, p.a));
+            g.addColorStop(1, rgba(p.c, 0));
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+            ctx.fill();
+        }
+    });
+
+    const sparkle = makeCanvas(document.getElementById("sparkle"), {
+        count: 64,
+        mk() {
+            const cols = ["#ffffff", "#ffe6a8", "#ffc6e0", "#cbb6ff"];
+            return { x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+                     r: rand(0.5, 2), c: pick(cols), a: rand(0.2, 0.9),
+                     tw: rand(0.008, 0.03), dir: Math.random() < 0.5 ? 1 : -1,
+                     vy: -rand(0.1, 0.5), vx: rand(-0.15, 0.15) };
+        },
+        draw(ctx, p) {
+            p.y += p.vy; p.x += p.vx;
+            p.a += p.tw * p.dir;
+            if (p.a > 0.95 || p.a < 0.12) p.dir *= -1;
+            if (p.y < -6) { p.y = innerHeight + 6; p.x = Math.random() * innerWidth; }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+            ctx.fillStyle = rgba(p.c, p.a);
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = p.c;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+    });
+    bottomBlooms();
+
+    let spawnTimer = 0;
+    function startSpawner() {
+        if (spawnTimer || REDUCE) return;
+        spawnTimer = setInterval(() => {
+            spawn(TIERS[2]);
+            if (Math.random() < 0.8) spawn(TIERS[1]);
+            if (Math.random() < 0.7) spawn(TIERS[0]);
+        }, 900);
+    }
+    function stopSpawner() { clearInterval(spawnTimer); spawnTimer = 0; }
+
+    if (REDUCE) {
+        [[TIERS[0], 14], [TIERS[1], 12], [TIERS[2], 9]].forEach(([t, n]) => {
+            for (let i = 0; i < n; i++) {
+                const f = spawn(t, false);
+                if (f) f.style.top = rand(-4, 96) + "vh";
+            }
+        });
+    } else {
+        for (let i = 0; i < 14; i++) spawn(TIERS[0], true);
+        for (let i = 0; i < 12; i++) spawn(TIERS[1], true);
+        for (let i = 0; i < 10; i++) spawn(TIERS[2], true);
+        startSpawner();
+    }
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) { stopSpawner(); bokeh.stop(); sparkle.stop(); }
+        else { startSpawner(); bokeh.start(); sparkle.start(); }
+    });
+})();
+</script>
+
+</body>
+</html>

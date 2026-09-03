@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Reels saved for her</title>
+
 <style>
 body {
     margin: 0;
@@ -31,107 +33,56 @@ h1 {
     margin-bottom: 50px;
 }
 
-#reels {
+.categories {
     display: flex;
     flex-direction: column;
-    gap: 22px;
-    max-width: 600px;
+    max-width: 500px;
 }
 
-.reel {
+.category {
     display: block;
-    padding: 20px 0;
-    border-bottom: 1px solid rgba(87,168,255,.25);
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(87,168,255,.20);
     color: #57a8ff;
     text-decoration: none;
-    font-size: 19px;
+    font-size: 23px;
 }
 
-.reel:hover {
+.category:hover {
     color: white;
-}
-
-.empty {
-    color: rgba(255,255,255,.4);
-}
-.videoReel {
-    width: 100%;
-    margin-bottom: 35px;
-}
-.videoReel video {
-    width: 100%;
-    max-height: 75vh;
-    background: black;
-    border-radius: 14px;
-    display: block;
-}
-.reelNumber {
-    color: #57a8ff;
-    font-size: 17px;
-    margin-bottom: 12px;
 }
 </style>
 </head>
 
 <body>
+
 <a class="back" href="index.html">← worldwithemily.com</a>
+
 <h1>Reels saved for her</h1>
 
 <p class="subtitle">
 little things that reminded me of you.
 </p>
 
-<div id="reels"></div>
-<script>
-const reels = [
-    {
-        type: "video",
-        src: "media/reel01-web.mp4"
-    },
-];
-const container = document.getElementById("reels");
+<div class="categories">
 
-if (reels.length === 0) {
+    <a class="category" href="reels/flowers.html">
+        Flowers
+    </a>
 
-    container.innerHTML = `
-        <div class="empty">
-            no reels saved yet.
-        </div>
-    `;
+    <a class="category" href="reels/missing-her.html">
+        Missing her
+    </a>
 
-} else {
-    reels.forEach((reel, index) => {
-        if (reel.type === "video") {
+    <a class="category" href="reels/funny.html">
+        Funny
+    </a>
 
-            const wrapper = document.createElement("div");
-            wrapper.className = "videoReel";
+    <a class="category" href="reels/travel.html">
+        Travel
+    </a>
 
-            wrapper.innerHTML = `
-                <div class="reelNumber">
-                    Reel ${String(index + 1).padStart(2, "0")}
-                </div>
+</div>
 
-                <video controls playsinline preload="metadata">
-                    <source src="${reel.src}" type="video/mp4">
-                </video>
-            `;
-
-            container.appendChild(wrapper);
-
-        }
-        if (reel.type === "link") {
-            const link = document.createElement("a");
-            link.className = "reel";
-            link.href = reel.src;
-            link.target = "_blank";
-
-            link.textContent =
-                "Reel " + String(index + 1).padStart(2, "0");
-            container.appendChild(link);
-
-        }
-
-    });
-
-}
-</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reels saved for her</title>
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #03050a;
+    color: #eeeeee;
+    font-family: "Courier New", monospace;
+    padding: 40px;
+}
+
+.back {
+    color: #57a8ff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+h1 {
+    margin-top: 70px;
+    font-weight: normal;
+    font-size: 38px;
+}
+
+.subtitle {
+    color: rgba(255,255,255,.5);
+    margin-bottom: 50px;
+}
+
+#reels {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    max-width: 600px;
+}
+
+.reel {
+    display: block;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(87,168,255,.25);
+    color: #57a8ff;
+    text-decoration: none;
+    font-size: 19px;
+}
+
+.reel:hover {
+    color: white;
+}
+
+.empty {
+    color: rgba(255,255,255,.4);
+}
+.videoReel {
+    width: 100%;
+    margin-bottom: 35px;
+}
+.videoReel video {
+    width: 100%;
+    max-height: 75vh;
+    background: black;
+    border-radius: 14px;
+    display: block;
+}
+.reelNumber {
+    color: #57a8ff;
+    font-size: 17px;
+    margin-bottom: 12px;
+}
+</style>
+</head>
+
+<body>
+<a class="back" href="index.html">← reels saved for her</a>
+<h1>Missing her</h1>
+
+<p class="subtitle">
+my feelings when i miss you.
+</p>
+
+<div id="reels"></div>
+<script>
+const reels = [
+
+    {
+        type: "video",
+        src: "../media/reels/missing-her/missing01.mp4"
+    },
+
+    {
+        type: "video",
+        src: "../media/reels/missing-her/missing02.mp4"
+    }
+
+];
+const container = document.getElementById("reels");
+
+if (reels.length === 0) {
+
+    container.innerHTML = `
+        <div class="empty">
+            no reels saved yet.
+        </div>
+    `;
+
+} else {
+    reels.forEach((reel, index) => {
+        if (reel.type === "video") {
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "videoReel";
+
+            wrapper.innerHTML = `
+                <div class="reelNumber">
+                    Reel ${String(index + 1).padStart(2, "0")}
+                </div>
+
+                <video controls playsinline preload="metadata">
+                    <source src="${reel.src}" type="video/mp4">
+                </video>
+            `;
+
+            container.appendChild(wrapper);
+
+        }
+        if (reel.type === "link") {
+            const link = document.createElement("a");
+            link.className = "reel";
+            link.href = reel.src;
+            link.target = "_blank";
+
+            link.textContent =
+                "Reel " + String(index + 1).padStart(2, "0");
+            container.appendChild(link);
+
+        }
+
+    });
+
+}
+</script>
