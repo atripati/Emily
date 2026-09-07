@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Letter 03</title>
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #03050a;
+    color: #eeeeee;
+    font-family: "Courier New", monospace;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    width: min(500px, 85vw);
+}
+.back {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    color: #57a8ff;
+    text-decoration: none;
+}
+h1 {
+    font-weight: normal;
+    font-size: 36px;
+}
+
+.sub {
+    color: rgba(255,255,255,.5);
+    margin-bottom: 35px;
+}
+input {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.2);
+    color: white;
+    font-family: inherit;
+    font-size: 17px;
+    outline: none;
+}
+input:focus {
+    border-color: #57a8ff;
+}
+button {
+    margin-top: 18px;
+    border: 0;
+    background: none;
+    color: #57a8ff;
+    font-family: inherit;
+    font-size: 17px;
+    cursor: pointer;
+}
+#error {
+    margin-top: 20px;
+    color: #57a8ff;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+<a class="back" href="../blogs.html">← letters</a>
+<div class="container">
+
+    <h1>Letter 03 🔒</h1>
+
+    <div class="sub">
+        This letter requires a password.
+    </div>
+
+    <input
+        id="password"
+        type="password"
+        placeholder="password..."
+    >
+
+    <button id="unlock">
+        unlock →
+    </button>
+
+    <div id="error">
+        access denied, Emily.exe 👀
+    </div>
+
+</div>
+
+<script>
+const encryptedLetter = "JdNfmBmr5YQZ7KqKqnKQ9KIUWU96kOH/Ant2hJluBloYeLn6E2NFv0T4PILTERdkIRsWFtGU1BOkRZi1txYV8rB9Rg/p63uw8fXh+Wu5+Qs8moHyhAwQCT8C+SM75QcMU1JIaUCdWQc+sqCwbnn5v3hKofkvxS/WXm5ptpAnBw1f0hrIdNnZNQSsdVX8t1XECOwC9Bt8ua8/yl76s1BtvdnUJEW6Iiothp19CzCsgJbtIklRiCZ32VXaU+NsA41d9S7V8d5TfkSB/lj3smDQIKUB5frpc6M7d2qxnSxjVSqznnumpQK/YpOoPiF+WlCH0uYZsycqA4ueS97A9XiADE+epWKUBk2miOfslQpmTGWeNjos6lmqAJpGQIQZpuPJka6mLQ6CIfuixUC1fXMa3FOAR81ox773WuJ9gL+TCbQywwetuCw87vBejxZdFH1HIvEM6hW6FVXbdfrG0ibQ5ZBE8KgjeaGuOZD0vt0sVnazDbQIfKVvooFkFNN9epejQ4smHPTgkKgsGgP/aMKFewv1oQATSpj+iRBVVqvxHRnV3jjfeOuwPV7wLHhtwZvmnm5b3JRglqggbYJk+otoAibcYuJg/2RVoEpOS0J7XgVA5wZ49SS2mmR98bn1HMN97DM1DbD2uHVRW1nvgmLCBRC4O3N2gbq6sq+i7p49CdyBo4PzEE1rT+56WuOLRV8M6AL1svOLbHPd+MLE2SUIECDJAy6SV1Tr7lMW6cKh5Eu+MdCRlvn0i+53wYx67RM/q5ODA2FhkMpMqa7fdItUFgQeReoCeE9YiYM/maZc+f/o3qL9CS5B5Q30jpA9T7XqApgFRmpjLtcmzydRdPWLpgZF5MENtnyoH+OQjrockphmi0PkEQgS3KlVnYVeoJ/NpK1m5E+nnx+QPSWlffCqYeFNctbKPjj7uCWIpCkufR1w+B3fr2v1mlOdwYPkGA4iE80L1yKMfsQU4hCprkiWOmE6tO71O6FJIJ05agnvflggD3DOdKoxHBvFV/dwOEuydM2a7yBRTjqYngpzUMB566tQdjU56VxiPasbnBoRSLrTTqQ7m/OisOZRAIqGZvtNmPquYc2Tkb/YtbefCxtGpf74HfdLx9YiA86pWYqfylB/Tv8h9na2Mx7V3HqaLK/nf4PShhIeUzp4VfgWqlGjXtAE6zfGtHMOssY/+QIhw2/tm+ZMVEpCgRGS7awj1EAyYgqVS06gPUhKJo5V/qbsumkucchqP2BhEaLuxvRzLm/uB/cfxbRYTtzl3HlyJNl4eauNUyxUfpHQUYwUNOU=";
+const salt = "ntE3RcBzbvMAieR7cSpX+w==";
+const iv = "tjMGqhytS1uRbs97";
+
+
+function base64ToBytes(base64) {
+    return Uint8Array.from(
+        atob(base64),
+        c => c.charCodeAt(0)
+    );
+}
+async function decryptLetter(password) {
+    const encoder = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(password),
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+    );
+    const key = await crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: base64ToBytes(salt),
+            iterations: 200000,
+            hash: "SHA-256"
+        },
+        keyMaterial,
+        {
+            name: "AES-GCM",
+            length: 256
+        },
+        false,
+        ["decrypt"]
+    );
+    const decrypted = await crypto.subtle.decrypt(
+        {
+            name: "AES-GCM",
+            iv: base64ToBytes(iv)
+        },
+        key,
+        base64ToBytes(encryptedLetter)
+    );
+    return new TextDecoder().decode(decrypted);
+}
+
+document
+.getElementById("unlock")
+.addEventListener("click", async () => {
+    const password =
+        document.getElementById("password").value;
+
+    const error =
+        document.getElementById("error");
+
+    try {
+        const text =
+            await decryptLetter(password);
+
+        document.querySelector(".container").innerHTML = `
+            <div style="
+                white-space: pre-wrap;
+                line-height: 1.9;
+                font-size: 17px;
+            ">${text}</div>
+        `;
+
+    } catch {
+
+        error.style.display = "block";
+
+    }
+
+});
+
+document
+.getElementById("password")
+.addEventListener("keydown", event => {
+
+    if (event.key === "Enter") {
+        document
+        .getElementById("unlock")
+        .click();
+    }
+
+});
+
+</script>
+</body>
+</html>
