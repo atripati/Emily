@@ -70,6 +70,14 @@ h1 {
     font-size: 17px;
     margin-bottom: 12px;
 }
+.reelCaption {
+    margin-top: 12px;
+    margin-bottom: 18px;
+    color: rgba(255,255,255,.75);
+    font-size: 16px;
+    line-height: 1.7;
+}
+
 </style>
 </head>
 
@@ -93,7 +101,19 @@ const reels = [
     {
         type: "video",
         src: "../media/reels/missing-her/missing02.mp4"
-    }
+    },
+
+    {
+        type: "video",
+        src: "../media/reels/missing-her/missing03.mp4",
+        caption: "if she ever liked me back we will endup like this"
+    },
+
+    {
+        type: "video",
+        src: "../media/reels/missing-her/missing04.mp4",
+        caption: "me sometime in my dream"
+    },
 
 ];
 const container = document.getElementById("reels");
@@ -121,6 +141,9 @@ if (reels.length === 0) {
                 <video controls playsinline preload="metadata">
                     <source src="${reel.src}" type="video/mp4">
                 </video>
+                <div class="reelCaption">
+                    ${reel.caption || ""}
+                </div>
             `;
 
             container.appendChild(wrapper);
