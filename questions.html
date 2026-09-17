@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Questions for her</title>
+<style>
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #03050a;
+    color: #eeeeee;
+    font-family: "Courier New", monospace;
+    padding: 40px;
+}
+
+.back {
+    color: #57a8ff;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 700px;
+    margin-top: 70px;
+}
+
+h1 {
+    font-weight: normal;
+    font-size: 38px;
+}
+
+.subtitle {
+    color: rgba(255,255,255,.5);
+    margin-bottom: 50px;
+}
+
+.question {
+    margin-bottom: 45px;
+}
+
+.questionText {
+    color: #57a8ff;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 15px;
+
+    background: rgba(255,255,255,.03);
+    color: white;
+
+    border: 1px solid rgba(87,168,255,.25);
+    border-radius: 8px;
+
+    font-family: "Courier New", monospace;
+    font-size: 16px;
+
+    resize: vertical;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #57a8ff;
+}
+
+#submitAnswers {
+    margin-top: 10px;
+    padding: 14px 22px;
+
+    border: 1px solid #57a8ff;
+    background: transparent;
+    color: #57a8ff;
+
+    font-family: "Courier New", monospace;
+    font-size: 17px;
+
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+#submitAnswers:hover {
+    background: rgba(87,168,255,.1);
+}
+
+#submitAnswers:disabled {
+    opacity: .4;
+    cursor: default;
+}
+
+#submitStatus {
+    margin-top: 20px;
+    color: #57a8ff;
+    font-size: 16px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<a class="back" href="index.html">
+    ← worldwithemily.com
+</a>
+
+
+<div class="container">
+
+    <h1>
+        Questions for her
+    </h1>
+
+    <p class="subtitle">
+        in case you ever find this place and feel like answering.
+    </p>
+
+
+    <div class="question">
+
+    <div class="questionText">
+        01. How can you not see how much I like you?
+    </div>
+
+    <textarea id="answer1" placeholder="your answer..."></textarea>
+
+    <button class="submitAnswer" data-question="1">
+        submit answer
+    </button>
+
+    <div class="answerStatus" id="status1"></div>
+
+</div>
+
+
+<div class="question">
+
+    <div class="questionText">
+        02. While I spend the whole class wondering whether I should talk to you, do you ever think about me at all😂?
+    </div>
+
+    <textarea id="answer2" placeholder="your answer..."></textarea>
+
+    <button class="submitAnswer" data-question="2">
+        submit answer
+    </button>
+
+    <div class="answerStatus" id="status2"></div>
+
+</div>
+
+
+<div class="question">
+
+    <div class="questionText">
+        03. Did you ever miss me, even a little, because I do every day?
+    </div>
+
+    <textarea id="answer3" placeholder="your answer..."></textarea>
+
+    <button class="submitAnswer" data-question="3">
+        submit answer
+    </button>
+
+    <div class="answerStatus" id="status3"></div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+    "https://urwrcmvzyqosvcngtlxg.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_cfwN9a5bj9XeqKZ-M829-Q_h8g7N8e0";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+const submitButton =
+    document.getElementById("submitAnswers");
+
+const status =
+    document.getElementById("submitStatus");
+
+
+submitButton.addEventListener(
+    "click",
+    async () => {
+
+        const question1 =
+            document
+                .getElementById("answer1")
+                .value
+                .trim();
+
+        const question2 =
+            document
+                .getElementById("answer2")
+                .value
+                .trim();
+
+        const question3 =
+            document
+                .getElementById("answer3")
+                .value
+                .trim();
+
+
+        if (
+            !question1 &&
+            !question2 &&
+            !question3
+        ) {
+
+            status.textContent =
+                "write at least one answer first.";
+
+            return;
+        }
+
+
+        submitButton.disabled = true;
+
+        status.textContent =
+            "saving...";
+
+
+        const { error } =
+            await supabaseClient
+                .from("answers")
+                .insert([
+                    {
+                        question1:
+                            question1 || null,
+
+                        question2:
+                            question2 || null,
+
+                        question3:
+                            question3 || null
+                    }
+                ]);
+
+
+        if (error) {
+
+            console.error(error);
+
+            status.textContent =
+                "something went wrong. please try again.";
+
+            submitButton.disabled = false;
+
+            return;
+        }
+
+
+        status.textContent =
+            "your answers were saved ♡";
+
+
+        document
+            .getElementById("answer1")
+            .disabled = true;
+
+        document
+            .getElementById("answer2")
+            .disabled = true;
+
+        document
+            .getElementById("answer3")
+            .disabled = true;
+
+    }
+);
+
+</script>
+
+</body>
+</html>
