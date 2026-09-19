@@ -70,7 +70,7 @@ textarea:focus {
     border-color: #57a8ff;
 }
 
-#submitAnswers {
+.submitAnswer {
     margin-top: 10px;
     padding: 14px 22px;
 
@@ -84,33 +84,27 @@ textarea:focus {
     cursor: pointer;
     border-radius: 8px;
 }
-
-#submitAnswers:hover {
+.submitAnswer:hover {
     background: rgba(87,168,255,.1);
 }
 
-#submitAnswers:disabled {
+.submitAnswer:disabled {
     opacity: .4;
     cursor: default;
 }
 
-#submitStatus {
+.answerStatus {
     margin-top: 20px;
     color: #57a8ff;
     font-size: 16px;
 }
-
 </style>
-
 </head>
-
-
 <body>
 
 <a class="back" href="index.html">
     ← worldwithemily.com
 </a>
-
 
 <div class="container">
 
@@ -173,6 +167,40 @@ textarea:focus {
 
 </div>
 
+
+<div class="question">
+
+    <div class="questionText">
+        04. On Thursday, I thought I would talk to you somehow again, but when I saw you in LPC with that guy, talking, laughing, and sharing food, I was hurt. I am hurt. It feels like something is eating my heart from inside. Why, Emily, why?
+    </div>
+
+    <textarea id="answer4" placeholder="your answer..."></textarea>
+
+    <button class="submitAnswer" data-question="4">
+        submit answer
+    </button>
+
+    <div class="answerStatus" id="status4"></div>
+
+</div>
+
+
+<div class="question">
+
+    <div class="questionText">
+        05. I am trying to hate you after seeing you with that guy, but I am not able to do it, because I am in love with you. I didn't choose it; it just happened. My soul chose it for me. The air around me changes when I am around you, like I am on top of the world. I do still love you, knowing the fact that we can't be together, but who cares? I do love you, period, end of story, and I don't want you to love me back, just be happy.
+    </div>
+
+    <textarea id="answer5" placeholder="your answer..."></textarea>
+
+    <button class="submitAnswer" data-question="5">
+        submit answer
+    </button>
+
+    <div class="answerStatus" id="status5"></div>
+
+</div>
+
 <script>
 
 const SUPABASE_URL =
@@ -181,111 +209,64 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_cfwN9a5bj9XeqKZ-M829-Q_h8g7N8e0";
 
-
 const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
+    window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
-const submitButton =
-    document.getElementById("submitAnswers");
+document.querySelectorAll(".submitAnswer").forEach((button) => {
 
-const status =
-    document.getElementById("submitStatus");
+    button.addEventListener("click", async () => {
 
+        const block = button.closest(".question");
 
-submitButton.addEventListener(
-    "click",
-    async () => {
+        const questionNumber =
+            parseInt(button.dataset.question, 10);
 
-        const question1 =
-            document
-                .getElementById("answer1")
-                .value
-                .trim();
+        const questionText =
+            block.querySelector(".questionText").textContent.trim();
 
-        const question2 =
-            document
-                .getElementById("answer2")
-                .value
-                .trim();
-
-        const question3 =
-            document
-                .getElementById("answer3")
-                .value
-                .trim();
+        const textarea = block.querySelector("textarea");
+        const status = block.querySelector(".answerStatus");
+        const answer = textarea.value.trim();
 
 
-        if (
-            !question1 &&
-            !question2 &&
-            !question3
-        ) {
-
-            status.textContent =
-                "write at least one answer first.";
-
+        if (!answer) {
+            status.textContent = "write an answer first.";
             return;
         }
 
 
-        submitButton.disabled = true;
-
-        status.textContent =
-            "saving...";
+        button.disabled = true;
+        status.textContent = "saving...";
 
 
         const { error } =
             await supabaseClient
-                .from("answers")
+                .from("question_answers")
                 .insert([
                     {
-                        question1:
-                            question1 || null,
-
-                        question2:
-                            question2 || null,
-
-                        question3:
-                            question3 || null
+                        question_number: questionNumber,
+                        question_text: questionText,
+                        answer: answer
                     }
                 ]);
 
 
         if (error) {
-
             console.error(error);
-
             status.textContent =
                 "something went wrong. please try again.";
-
-            submitButton.disabled = false;
-
+            button.disabled = false;
             return;
         }
 
 
-        status.textContent =
-            "your answers were saved ♡";
+        status.textContent = "your answer was saved ♡";
+        textarea.disabled = true;
 
+    });
 
-        document
-            .getElementById("answer1")
-            .disabled = true;
-
-        document
-            .getElementById("answer2")
-            .disabled = true;
-
-        document
-            .getElementById("answer3")
-            .disabled = true;
-
-    }
-);
+});
 
 </script>
 

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0f1c">
+<title>Dexter &amp; Lolek's Secret Room</title>
+<style>
+:root { --blue: #57a8ff; --text: #eef2fb; --card: #0b1120; }
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+    min-height: 100vh;
+    color: var(--text);
+    font-family: "Courier New", monospace;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #0a0f1c url("media/cats/dream.webp") center center / cover no-repeat fixed;
+}
+body::before {
+    content: "";
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(8,12,24,.74) 0%, rgba(8,12,24,.30) 26%, rgba(8,12,24,.18) 55%, rgba(6,9,18,.68) 100%);
+}
+.topbar, .dreamHead, .scene { position: relative; z-index: 1; }
+
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 24px; flex-wrap: wrap; }
+.back, .noteBtn {
+    color: var(--blue); font-family: inherit; font-size: 14px; text-decoration: none;
+    text-shadow: 0 2px 10px rgba(0,0,0,.85);
+}
+.noteBtn { border: 1px solid rgba(87,168,255,.4); background: rgba(87,168,255,.06); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+.noteBtn:hover { background: rgba(87,168,255,.16); }
+.back:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+.dreamHead { text-align: center; padding: 18px 20px 0; }
+.dreamHead h1 {
+    margin: 0; font-family: Georgia, "Times New Roman", serif; font-weight: 400;
+    font-size: clamp(30px, 6vw, 62px); letter-spacing: .5px; color: #fff;
+    text-shadow: 0 3px 24px rgba(0,0,0,.7), 0 0 40px rgba(0,0,0,.4);
+}
+.dreamHead p { margin: 12px 0 0; color: rgba(238,242,251,.8); font-size: clamp(12px, 1.7vw, 15px); text-shadow: 0 2px 12px rgba(0,0,0,.85); }
+.scene {
+    margin-top: auto;
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: clamp(12px, 4vw, 44px); flex-wrap: wrap;
+    padding: 30px 16px 40px;
+}
+.obj { border: 0; background: transparent; padding: 0; cursor: pointer; position: relative; font-family: inherit; color: var(--text); }
+.obj:focus-visible, .catBtn:focus-visible { outline: 2px solid var(--blue); outline-offset: 6px; border-radius: 10px; }
+.objLabel { position: absolute; left: 0; right: 0; bottom: -22px; text-align: center; font-size: 11px; color: rgba(238,242,251,.75); text-shadow: 0 2px 8px rgba(0,0,0,.9); }
+
+.box { width: clamp(96px, 15vw, 128px); height: clamp(80px, 12vw, 104px); }
+.boxBody { position: absolute; inset: 22% 0 0 0; background: linear-gradient(180deg, #c8975a, #a9793f); border-radius: 4px; box-shadow: inset 0 -10px 18px rgba(0,0,0,.28), 0 10px 20px rgba(0,0,0,.5); }
+.boxFlapL, .boxFlapR { position: absolute; top: 4%; width: 52%; height: 30%; background: linear-gradient(180deg, #d7a668, #bd8b4c); border-radius: 4px; }
+.boxFlapL { left: 0; transform: rotate(-26deg); transform-origin: bottom right; }
+.boxFlapR { right: 0; transform: rotate(26deg); transform-origin: bottom left; }
+.box .peeker { position: absolute; left: 50%; top: 8%; width: 66%; transform: translate(-50%, 14px) scale(.6); opacity: 0; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)); transition: transform .45s cubic-bezier(.2,.9,.2,1.2), opacity .3s; pointer-events: none; z-index: 3; }
+.box.pop .peeker { opacity: 1; transform: translate(-50%, -46%) scale(1); }
+
+.jar { width: clamp(66px, 11vw, 88px); height: clamp(92px, 15vw, 122px); }
+.jarGlass { position: absolute; inset: 16% 6% 0 6%; background: linear-gradient(180deg, rgba(150,190,255,.22), rgba(120,160,255,.10)); border: 2px solid rgba(170,205,255,.5); border-radius: 10px 10px 14px 14px; box-shadow: inset 0 0 18px rgba(120,170,255,.25), 0 10px 16px rgba(0,0,0,.45); overflow: hidden; }
+.jarTreats { position: absolute; left: 0; right: 0; bottom: 0; height: 46%; background: radial-gradient(6px 6px at 22% 40%, #d78b4a 60%, transparent 62%), radial-gradient(6px 6px at 58% 62%, #c47a3c 60%, transparent 62%), radial-gradient(6px 6px at 80% 36%, #e0a15e 60%, transparent 62%), linear-gradient(180deg, #a9743a, #8a5d2c); }
+.jarLid { position: absolute; top: 6%; left: 2%; right: 2%; height: 14%; background: linear-gradient(180deg, #4a6bb0, #34508c); border-radius: 8px; }
+
+.catWrap { position: relative; display: flex; flex-direction: column; align-items: center; }
+.catBtn { border: 0; background: transparent; padding: 0; cursor: pointer; line-height: 0; }
+.catBtn img { width: clamp(120px, 19vw, 168px); height: auto; display: block; filter: drop-shadow(0 12px 18px rgba(0,0,0,.6)); animation: bob 3.6s ease-in-out infinite alternate; transform-origin: center bottom; }
+.catWrap.lolek .catBtn img { animation-duration: 4.2s; animation-delay: .4s; }
+.catBtn.speak img { animation: perk .5s ease; }
+.catName { margin-top: 6px; font-size: 12px; letter-spacing: 1px; color: rgba(238,242,251,.75); text-shadow: 0 2px 8px rgba(0,0,0,.9); }
+@keyframes bob { from { transform: translateY(0) rotate(-.6deg); } to { transform: translateY(-6px) rotate(.6deg); } }
+@keyframes perk { 0%{transform:translateY(0) scale(1);} 40%{transform:translateY(-10px) scale(1.05);} 100%{transform:translateY(0) scale(1);} }
+
+.bubble { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%) translateY(6px); width: max-content; max-width: min(240px, 68vw); background: var(--card); border: 1px solid rgba(87,168,255,.45); border-radius: 12px; padding: 10px 14px; font-size: 13px; line-height: 1.4; text-align: center; box-shadow: 0 10px 26px rgba(0,0,0,.6); opacity: 0; visibility: hidden; transition: opacity .25s, transform .25s, visibility .25s; z-index: 5; }
+.bubble::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 7px solid transparent; border-top-color: var(--card); }
+.bubble.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+.floaty { position: absolute; z-index: 6; pointer-events: none; font-size: 18px; animation: up 1.5s ease-out forwards; }
+@keyframes up { 0%{opacity:0; transform:translateY(0) scale(.6);} 20%{opacity:1;} 100%{opacity:0; transform:translateY(-70px) scale(1.15);} }
+
+#toasts { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 40; display: flex; flex-direction: column; gap: 10px; align-items: center; max-width: 92vw; pointer-events: none; }
+.toast { background: rgba(11,17,32,.96); border: 1px solid rgba(87,168,255,.5); border-radius: 12px; padding: 12px 16px; box-shadow: 0 12px 30px rgba(0,0,0,.6); font-size: 13px; animation: tin .35s ease; }
+@keyframes tin { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+
+.overlay { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(4,6,14,.7); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; }
+.overlay.show { opacity: 1; visibility: visible; }
+.panel { position: relative; background: var(--card); border: 1px solid rgba(87,168,255,.4); border-radius: 16px; padding: 26px 24px; width: min(520px, 94vw); max-height: 84vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,.6); transform: translateY(10px); transition: transform .3s; }
+.overlay.show .panel { transform: none; }
+.panel h2 { margin: 0 0 4px; font-weight: normal; font-size: 22px; }
+.panelSub { color: rgba(238,242,251,.55); font-size: 13px; margin-bottom: 18px; }
+.panelClose { position: absolute; top: 12px; right: 14px; border: 0; background: transparent; color: var(--blue); font-size: 24px; line-height: 1; cursor: pointer; }
+.panelClose:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
+.noteEmpty { color: rgba(238,242,251,.55); font-size: 14px; line-height: 1.7; }
+.eggPanel { text-align: center; }
+.eggPanel .h { font-size: 30px; margin-bottom: 8px; }
+.eggPanel p { font-size: 16px; line-height: 1.7; }
+.eggPanel .s { font-size: 12px; color: rgba(238,242,251,.5); margin-top: 14px; }
+
+#star { position: fixed; left: 14px; bottom: 12px; width: 12px; height: 12px; border: 0; padding: 0; border-radius: 50%; background: radial-gradient(circle, rgba(200,220,255,.9), rgba(120,170,255,0) 70%); opacity: .16; cursor: pointer; z-index: 30; transition: opacity .3s; }
+#star:hover, #star:focus-visible { opacity: .5; outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .catBtn img, .catBtn.speak img { animation: none !important; }
+    .floaty { animation-duration: .9s; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <a class="back" href="index.html">← worldwithemily.com</a>
+    <button class="noteBtn" id="openNote" type="button" aria-haspopup="dialog">📖 their notebook</button>
+</div>
+
+<div class="dreamHead">
+    <h1>with her, i dream of…</h1>
+    <p>dexter and lolek have already picked their windows.</p>
+</div>
+
+<div class="scene">
+    <button class="obj box" id="box" type="button" aria-label="a mysterious cardboard box">
+        <img class="peeker" id="peeker" alt="" src="media/cats/dexter.webp">
+        <span class="boxFlapL" aria-hidden="true"></span>
+        <span class="boxFlapR" aria-hidden="true"></span>
+        <span class="boxBody" aria-hidden="true"></span>
+        <span class="objLabel">box</span>
+    </button>
+
+    <div class="catWrap dexter">
+        <div class="bubble" id="bubbleDexter" role="status" aria-live="polite"></div>
+        <button class="catBtn" id="dexter" type="button" aria-label="Dexter, the black cat">
+            <img src="media/cats/dexter.webp" alt="Dexter, a black cat with gold eyes">
+        </button>
+        <div class="catName">DEXTER</div>
+    </div>
+
+    <div class="catWrap lolek">
+        <div class="bubble" id="bubbleLolek" role="status" aria-live="polite"></div>
+        <button class="catBtn" id="lolek" type="button" aria-label="Lolek, the gray cat">
+            <img src="media/cats/lolek.webp" alt="Lolek, a gray tabby cat with green eyes">
+        </button>
+        <div class="catName">LOLEK</div>
+    </div>
+
+    <button class="obj jar" id="jar" type="button" aria-label="the treat jar">
+        <span class="jarLid" aria-hidden="true"></span>
+        <span class="jarGlass" aria-hidden="true"><span class="jarTreats"></span></span>
+        <span class="objLabel">treats</span>
+    </button>
+</div>
+
+<div id="toasts" aria-live="polite"></div>
+
+<div class="overlay" id="noteOverlay">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="noteTitle">
+        <button class="panelClose" data-close type="button" aria-label="close">×</button>
+        <h2 id="noteTitle">The Secret Notebook</h2>
+        <div class="panelSub">notes recovered from under the couch. authors: two (2) cats.</div>
+        <div class="noteEmpty">the pages are blank for now… the cats are still deciding what's worth writing down.</div>
+    </div>
+</div>
+
+<div class="overlay" id="eggOverlay">
+    <div class="panel eggPanel" role="dialog" aria-modal="true" aria-labelledby="eggTitle">
+        <button class="panelClose" data-close type="button" aria-label="close">×</button>
+        <div class="h" aria-hidden="true">♡</div>
+        <p id="eggTitle">Emily, if you found this, the cats have officially approved your visit. Abhi built this little universe with pure love.</p>
+        <div class="s">— Dexter &amp; Lolek (and Abhi)</div>
+    </div>
+</div>
+
+<button id="star" type="button" aria-label="a tiny star"></button>
+
+<script>
+(function () {
+    "use strict";
+    var pick = function (a) { return a[(Math.random() * a.length) | 0]; };
+
+    var LINES = {
+        dexter: ["Who gave you permission to enter?", "I have reviewed your application. Still suspicious.",
+            "Emily is busy. Please leave snacks.", "This website belongs to me now.",
+            "I'm watching you. I'm always watching."],
+        lolek: ["Have you seen my treats?", "I was sleeping. What happened?",
+            "Dexter told me not to trust you, but you seem nice.", "I think Emily should give us more food.",
+            "is it snack o'clock yet?"]
+    };
+    var timers = {};
+    function speak(which) {
+        var btn = document.getElementById(which);
+        var b = document.getElementById(which === "dexter" ? "bubbleDexter" : "bubbleLolek");
+        b.textContent = pick(LINES[which]);
+        b.classList.add("show");
+        btn.classList.add("speak");
+        setTimeout(function () { btn.classList.remove("speak"); }, 500);
+        clearTimeout(timers[which]);
+        timers[which] = setTimeout(function () { b.classList.remove("show"); }, 4200);
+    }
+    document.getElementById("dexter").addEventListener("click", function () { speak("dexter"); });
+    document.getElementById("lolek").addEventListener("click", function () { speak("lolek"); });
+    var scene = document.querySelector(".scene");
+    document.getElementById("jar").addEventListener("click", function () {
+        ["dexter", "lolek"].forEach(function (id) {
+            var r = document.getElementById(id).getBoundingClientRect(), s = scene.getBoundingClientRect();
+            var el = document.createElement("span");
+            el.className = "floaty";
+            el.textContent = Math.random() < 0.5 ? "♡" : "✦";
+            el.style.left = (r.left - s.left + r.width / 2 - 9 + (Math.random() * 26 - 13)) + "px";
+            el.style.top = (r.top - s.top + 8) + "px";
+            scene.appendChild(el);
+            setTimeout(function () { el.remove(); }, 1600);
+        });
+    });
+    var box = document.getElementById("box"), peeker = document.getElementById("peeker"), busy = false;
+    function toast(msg, icon) {
+        var t = document.createElement("div");
+        t.className = "toast";
+        t.textContent = (icon || "📦") + "  " + msg;
+        document.getElementById("toasts").appendChild(t);
+        setTimeout(function () { t.style.transition = "opacity .5s"; t.style.opacity = "0"; setTimeout(function () { t.remove(); }, 500); }, 2400);
+    }
+    box.addEventListener("click", function () {
+        if (busy) return;
+        var roll = Math.random(), show = true, msg;
+        if (roll < 0.4) { peeker.src = "media/cats/dexter.webp"; msg = "Dexter guards the box. Obviously."; }
+        else if (roll < 0.8) { peeker.src = "media/cats/lolek.webp"; msg = "Lolek fell asleep in here again."; }
+        else { show = false; msg = "Cat not found. Try again."; }
+        busy = true;
+        if (show) box.classList.add("pop");
+        toast(msg);
+        setTimeout(function () { box.classList.remove("pop"); busy = false; }, 1700);
+    });
+    var lastFocus = null;
+    function open(id) { var o = document.getElementById(id); lastFocus = document.activeElement; o.classList.add("show"); var c = o.querySelector(".panelClose"); if (c) c.focus(); document.addEventListener("keydown", esc); }
+    function close(o) { o.classList.remove("show"); document.removeEventListener("keydown", esc); if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+    function esc(e) { if (e.key === "Escape") { var o = document.querySelector(".overlay.show"); if (o) close(o); } }
+    document.querySelectorAll(".overlay").forEach(function (o) {
+        o.addEventListener("click", function (e) { if (e.target === o) close(o); });
+        o.querySelectorAll("[data-close]").forEach(function (b) { b.addEventListener("click", function () { close(o); }); });
+    });
+    document.getElementById("openNote").addEventListener("click", function () { open("noteOverlay"); });
+    document.getElementById("star").addEventListener("click", function () { open("eggOverlay"); });
+    var buf = "";
+    document.addEventListener("keydown", function (e) {
+        if (e.key && e.key.length === 1) { buf = (buf + e.key.toLowerCase()).slice(-5); if (buf === "emily") { buf = ""; open("eggOverlay"); } }
+    });
+})();
+</script>
+
+</body>
+</html>
