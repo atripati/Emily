@@ -98,6 +98,24 @@ textarea:focus {
     color: #57a8ff;
     font-size: 16px;
 }
+.question.collapsed textarea,
+.question.collapsed .submitAnswer,
+.question.collapsed .answerStatus,
+.question.collapsed .closeToggle { display: none; }
+.question:not(.collapsed) .addToggle { display: none; }
+.addToggle, .closeToggle {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: #57a8ff;
+    opacity: .7;
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    cursor: pointer;
+}
+.addToggle { margin-top: 4px; }
+.closeToggle { display: block; margin-top: 12px; opacity: .55; }
+.addToggle:hover, .closeToggle:hover { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
 </style>
 </head>
 <body>
@@ -109,7 +127,7 @@ textarea:focus {
 <div class="container">
 
     <h1>
-        Questions for her
+        thoughts
     </h1>
 
     <p class="subtitle">
@@ -269,6 +287,40 @@ textarea:focus {
 
 </div>
 
+
+<div class="question">
+
+    <div class="questionText">
+        10. People might think, "Oh, you're a loser, loving a girl who doesn't love you back." Maybe you think the same thing too. But hey, Emily, who cares? 😂 How do I even explain this feeling? It is one of the most beautiful things I have ever experienced. I feel happy, sad, excited, nervous, and a hundred other emotions, sometimes all at once. And somehow, even with so much happening inside my heart, I have no one I can truly explain it to. And honestly, maybe I don't even need to explain it. Some feelings are too beautiful to put into words. I just feel them, and I am glad I got to feel something like this for you.
+    </div>
+
+    <textarea id="answer10" placeholder="your answer..."></textarea>
+
+    <button class="submitAnswer" data-question="10">
+        submit answer
+    </button>
+
+    <div class="answerStatus" id="status10"></div>
+
+</div>
+
+
+<div class="question">
+
+    <div class="questionText">
+        11. Emily, why don't you text me now? Call me, or just send me a little message saying, "Hey, I really wanna meet you." Oh my God, how am I supposed to handle that? 😂 You know, I should probably stay calm and act normal. But I'm already going crazy just imagining it. What would happen to me if you actually sent that message? My heart would probably forget how to beat normally, my brain would stop working, and I'd spend the next ten minutes staring at my phone, wondering if I was dreaming. And after all that, I'd probably reply with a very casual "hey" as if I hadn't just experienced every emotion known to humanity. 😂
+    </div>
+
+    <textarea id="answer11" placeholder="your answer..."></textarea>
+
+    <button class="submitAnswer" data-question="11">
+        submit answer
+    </button>
+
+    <div class="answerStatus" id="status11"></div>
+
+</div>
+
 <script>
 
 const SUPABASE_URL =
@@ -336,6 +388,32 @@ document.querySelectorAll(".submitAnswer").forEach((button) => {
 
 });
 
+</script>
+
+<script>
+document.querySelectorAll(".question").forEach(function (q) {
+    var ta = q.querySelector("textarea");
+    if (!ta) return;
+    q.classList.add("collapsed");
+    var toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "addToggle";
+    toggle.textContent = "wanna add, emily?";
+    q.insertBefore(toggle, ta);
+    var closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.className = "closeToggle";
+    closeBtn.textContent = "✕ close";
+    q.appendChild(closeBtn);
+    toggle.addEventListener("click", function () {
+        q.classList.remove("collapsed");
+        ta.focus();
+    });
+    closeBtn.addEventListener("click", function () {
+        q.classList.add("collapsed");
+        toggle.focus();
+    });
+});
 </script>
 
 </body>
