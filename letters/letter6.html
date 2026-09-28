@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Letter 06</title>
+
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #03050a;
+    color: #eeeeee;
+    font-family: "Courier New", monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: min(500px, 85vw);
+}
+
+.back {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    color: #57a8ff;
+    text-decoration: none;
+}
+
+h1 {
+    font-weight: normal;
+    font-size: 36px;
+}
+
+.sub {
+    color: rgba(255,255,255,.5);
+    margin-bottom: 35px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.2);
+    color: white;
+    font-family: inherit;
+    font-size: 17px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: #57a8ff;
+}
+
+button {
+    margin-top: 18px;
+    border: 0;
+    background: none;
+    color: #57a8ff;
+    font-family: inherit;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+#error {
+    margin-top: 20px;
+    color: #57a8ff;
+    display: none;
+}
+
+body.unlocked {
+    display: block;
+}
+
+body.unlocked .container {
+    width: min(750px, 85vw);
+    margin: 100px auto 70px;
+}
+</style>
+</head>
+
+<body>
+
+<a class="back" href="../blogs.html">← letters</a>
+
+<div class="container">
+
+    <h1>Letter 06 🔒</h1>
+
+    <div class="sub">
+        This letter requires a password.
+    </div>
+
+    <input
+        id="password"
+        type="password"
+        placeholder="password..."
+    >
+
+    <button id="unlock">
+        unlock →
+    </button>
+
+    <div id="error">
+        access denied, Emily.exe 👀
+    </div>
+
+</div>
+
+<script>
+
+const encryptedLetter = "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";
+
+const salt = "u1w5Ipwv74L2hFf+XMrJng==";
+const iv = "/BnDVW2p7GJEIY2A";
+
+
+function base64ToBytes(base64) {
+    return Uint8Array.from(
+        atob(base64),
+        c => c.charCodeAt(0)
+    );
+}
+
+
+async function decryptLetter(password) {
+
+    const encoder = new TextEncoder();
+
+    const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(password),
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+    );
+
+    const key = await crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: base64ToBytes(salt),
+            iterations: 200000,
+            hash: "SHA-256"
+        },
+        keyMaterial,
+        {
+            name: "AES-GCM",
+            length: 256
+        },
+        false,
+        ["decrypt"]
+    );
+
+    const decrypted = await crypto.subtle.decrypt(
+        {
+            name: "AES-GCM",
+            iv: base64ToBytes(iv)
+        },
+        key,
+        base64ToBytes(encryptedLetter)
+    );
+
+    return new TextDecoder().decode(decrypted);
+}
+
+
+document
+.getElementById("unlock")
+.addEventListener("click", async () => {
+
+    const password =
+        document.getElementById("password").value;
+
+    const error =
+        document.getElementById("error");
+
+    error.style.display = "none";
+
+    try {
+
+        const text =
+            await decryptLetter(password);
+
+        document.body.classList.add("unlocked");
+
+        const letter = document.createElement("div");
+
+        letter.style.whiteSpace = "pre-wrap";
+        letter.style.lineHeight = "1.9";
+        letter.style.fontSize = "17px";
+
+        letter.textContent = text;
+
+        document
+            .querySelector(".container")
+            .replaceChildren(letter);
+
+    } catch {
+
+        error.style.display = "block";
+
+    }
+
+});
+
+
+document
+.getElementById("password")
+.addEventListener("keydown", event => {
+
+    if (event.key === "Enter") {
+
+        document
+            .getElementById("unlock")
+            .click();
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
