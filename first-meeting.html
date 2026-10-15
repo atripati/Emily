@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>first meeting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root { --blue: #2b6fd6; }
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse 120% 80% at 50% -8%, rgba(120,160,230,.10), transparent 60%),
+        #ffffff;
+    color: #222;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    padding: 34px 24px 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.back {
+    align-self: flex-start;
+    color: var(--blue);
+    text-decoration: none;
+    font-family: "Courier New", monospace;
+    font-size: 15px;
+    opacity: .9;
+}
+.back:hover { opacity: 1; }
+
+h1 {
+    margin: 46px 0 6px;
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(34px, 6vw, 58px);
+    color: var(--blue);
+    letter-spacing: .5px;
+    text-align: center;
+}
+.subtitle {
+    margin: 0 0 40px;
+    font-family: "Caveat", cursive;
+    font-size: clamp(18px, 2.4vw, 24px);
+    color: #6b7280;
+    text-align: center;
+}
+
+.poem {
+    max-width: 640px;
+    width: 100%;
+    text-align: center;
+    font-size: clamp(19px, 2.3vw, 27px);
+    line-height: 1.9;
+    color: #2a2a2a;
+    letter-spacing: .2px;
+}
+.poem .line {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+.poem .line.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.poem .gap { height: 20px; }
+
+.endHeart {
+    margin-top: 48px;
+    color: var(--blue);
+    font-size: 20px;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+}
+.endHeart.show { opacity: .9; }
+
+@media (prefers-reduced-motion: reduce) {
+    .poem .line, .endHeart { opacity: 1 !important; transform: none !important; transition: none; }
+}
+@media (max-width: 600px) {
+    .poem { line-height: 1.75; }
+}
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← worldwithemily.com</a>
+
+<h1>first meeting</h1>
+<p class="subtitle">the day i first saw you.</p>
+
+<div class="poem" id="poem"></div>
+<div class="endHeart" id="endHeart">♥</div>
+
+<script>
+const lines = [
+    "thE day i Met you for the fIrst time,",
+    "i reaLized that maYbE god had Made three moons",
+    "two became your eyes,",
+    "and the thIrd was Left somewhere in the skY.",
+    "",
+    "your facE looked as though sunshine itself",
+    "had chosen to rest upon it.",
+    "on the train between north/clybourn and jackson,",
+    "i found Myself lookIng at you so compLetelY",
+    "that i forgot to blink.",
+    "",
+    "somEhow, i even began counting",
+    "your 480 eyelashes,",
+    "as if the whole ride had slowed down",
+    "just for that Moment.",
+    "",
+    "you looked as though god created roses",
+    "only after seeIng your Lips,",
+    "then sat down patientlY",
+    "and placEd every single eyelash around your eyes",
+    "with his own hands.",
+    "",
+    "and later, after our short walk,",
+    "when you were leaving for union station,",
+    "that was the Moment I understood",
+    "what it reaLlY mEans for a heart to beat.",
+    "",
+    "i never knew soMeone could look so beautIfuL",
+    "that, for a second,",
+    "theY could simply takE the breath out of you.",
+    "",
+    "as you turned away and started walking,",
+    "i stayed there.",
+    "i watched until you slowly disappeared froM my sIght,",
+    "aLmost as if leaving too soon",
+    "would make the moment end faster.",
+    "and somehow,",
+    "that made it even harder to forget.",
+    "",
+    "i wish god had given You onE More gIft too.",
+    "the abiity to read everything",
+    "someone's eyes are too afraid to say.",
+];
+
+const poem = document.getElementById("poem");
+const nodes = [];
+lines.forEach(text => {
+    if (text === "") {
+        const g = document.createElement("div");
+        g.className = "gap";
+        poem.appendChild(g);
+    } else {
+        const el = document.createElement("div");
+        el.className = "line";
+        el.textContent = text;
+        poem.appendChild(el);
+        nodes.push(el);
+    }
+});
+
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (reduce) {
+    nodes.forEach(n => n.classList.add("show"));
+    document.getElementById("endHeart").classList.add("show");
+} else {
+    nodes.forEach((n, i) => {
+        setTimeout(() => n.classList.add("show"), 250 + i * 320);
+    });
+    setTimeout(() => document.getElementById("endHeart").classList.add("show"),
+               250 + nodes.length * 320 + 400);
+}
+</script>
+</body>
+</html>

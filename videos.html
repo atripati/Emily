@@ -78,18 +78,90 @@ h1 {
     line-height: 1.7;
 }
 
+#videoCountBadge {
+    position: fixed;
+    top: 16px;
+    right: 18px;
+    z-index: 50;
+    display: none;
+    background: rgba(87,168,255,.16);
+    border: 1px solid rgba(87,168,255,.45);
+    color: #9ecbff;
+    padding: 6px 13px;
+    border-radius: 999px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    letter-spacing: .3px;
+}
+
+#gate {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+.gateBox { text-align: center; max-width: 360px; width: 100%; }
+.gateLock { font-size: 34px; margin-bottom: 14px; }
+.gateTitle {
+    font-size: 22px; color: #111111; margin-bottom: 8px;
+    font-family: Georgia, "Times New Roman", serif;
+}
+.gateHint { color: #666666; margin-bottom: 22px; font-size: 14px; }
+#gatePass {
+    width: 100%; box-sizing: border-box;
+    padding: 12px 14px; border-radius: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff; color: #111111;
+    font-size: 16px; text-align: center; outline: none;
+}
+#gatePass:focus { border-color: #333333; }
+#gateBtn {
+    margin-top: 16px; padding: 12px 22px; border-radius: 10px;
+    border: 1px solid #333333; background: #ffffff; color: #111111;
+    font-size: 15px; cursor: pointer; font-family: "Courier New", monospace;
+    max-width: 100%;
+}
+#gateBtn:hover { background: #f1f1f1; }
+.gateErr { color: #c23b3b; font-size: 14px; margin-top: 14px; min-height: 18px; }
+.gateBack {
+    display: inline-block; margin-top: 22px;
+    color: #2b6fd6; text-decoration: none; font-size: 13px;
+}
+.gateBack:hover { color: #1a4fa0; }
 </style>
 </head>
 
 <body>
-<a class="back" href="index.html">← worldwithemily.com</a>
-<h1>my videos text for Emily</h1>
 
-<p class="subtitle">
-little videos, with the words i wanted to say.
-</p>
+<div id="gate">
+    <div class="gateBox">
+        <div class="gateLock">🔒</div>
+        <div class="gateTitle">this page is just for you, emily 💙</div>
+        <p class="gateHint">enter the password to open</p>
+        <input id="gatePass" type="password" placeholder="password" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <br>
+        <button id="gateBtn" type="button">hey emily you know the password</button>
+        <div class="gateErr" id="gateErr"></div>
+        <a class="gateBack" href="index.html">← back to worldwithemily.com</a>
+    </div>
+</div>
 
-<div id="reels"></div>
+<div id="content" style="display:none">
+    <div id="videoCountBadge"></div>
+    <a class="back" href="index.html">← worldwithemily.com</a>
+    <h1>my videos text for Emily</h1>
+
+    <p class="subtitle">
+    little videos, with the words i wanted to say.
+    </p>
+
+    <div id="reels"></div>
+</div>
+
 <script>
 const reels = [
 
@@ -130,54 +202,82 @@ const reels = [
     },
 
 ];
-const container = document.getElementById("reels");
 
-if (reels.length === 0) {
+function renderReels() {
+    const container = document.getElementById("reels");
+    container.innerHTML = "";
 
-    container.innerHTML = `
-        <div class="empty">
-            no videos saved yet.
-        </div>
-    `;
+    if (reels.length === 0) {
+        container.innerHTML = '<div class="empty">no videos saved yet.</div>';
+    } else {
+        reels.forEach((reel, index) => {
+            if (reel.type === "video") {
+                const wrapper = document.createElement("div");
+                wrapper.className = "videoReel";
+                wrapper.innerHTML = `
+                    <div class="reelNumber">
+                        Reel ${String(index + 1).padStart(2, "0")}
+                    </div>
+                    <video controls playsinline preload="metadata">
+                        <source src="${reel.src}" type="video/mp4">
+                    </video>
+                    <div class="reelCaption">
+                        ${reel.caption || ""}
+                    </div>
+                `;
+                container.appendChild(wrapper);
+            }
+            if (reel.type === "link") {
+                const link = document.createElement("a");
+                link.className = "reel";
+                link.href = reel.src;
+                link.target = "_blank";
+                link.textContent = "Reel " + String(index + 1).padStart(2, "0");
+                container.appendChild(link);
+            }
+        });
+    }
 
-} else {
-    reels.forEach((reel, index) => {
-        if (reel.type === "video") {
-
-            const wrapper = document.createElement("div");
-            wrapper.className = "videoReel";
-
-            wrapper.innerHTML = `
-                <div class="reelNumber">
-                    Reel ${String(index + 1).padStart(2, "0")}
-                </div>
-
-                <video controls playsinline preload="metadata">
-                    <source src="${reel.src}" type="video/mp4">
-                </video>
-                <div class="reelCaption">
-                    ${reel.caption || ""}
-                </div>
-            `;
-
-            container.appendChild(wrapper);
-
-        }
-        if (reel.type === "link") {
-            const link = document.createElement("a");
-            link.className = "reel";
-            link.href = reel.src;
-            link.target = "_blank";
-
-            link.textContent =
-                "Reel " + String(index + 1).padStart(2, "0");
-            container.appendChild(link);
-
-        }
-
-    });
-
+    const badge = document.getElementById("videoCountBadge");
+    const n = reels.filter(r => r.type === "video").length;
+    badge.textContent = n + (n === 1 ? " video" : " videos");
+    badge.style.display = "block";
 }
+
+const SALT = "wwe_emily_videos_2026";
+const HASH = "dcd094cba105cff485f28cb2531213bb9737691b9fc5c655107b4525c5a3b27c";
+
+async function sha256hex(str) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function unlock() {
+    document.getElementById("gate").style.display = "none";
+    document.getElementById("content").style.display = "";
+    renderReels();
+}
+
+async function attempt() {
+    const input = document.getElementById("gatePass");
+    const val = input.value.trim().toLowerCase();
+    if (!val) return;
+    const h = await sha256hex(val + SALT);
+    if (h === HASH) {
+        unlock();
+    } else {
+        document.getElementById("gateErr").textContent = "that's not it — try again 💙";
+        input.value = "";
+        input.focus();
+    }
+}
+
+document.getElementById("gateBtn").addEventListener("click", attempt);
+document.getElementById("gatePass").addEventListener("keydown", e => {
+    if (e.key === "Enter") attempt();
+});
+
+document.getElementById("gatePass").focus();
 </script>
 </body>
 </html>
